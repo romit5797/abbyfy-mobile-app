@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Inventory from './inventory';
 import More from './more';
 import Message from './messages';
+import SideComponent from './sidecomponent';
 
 
 class HomeScreen extends React.Component {  
@@ -190,7 +191,7 @@ const TabNavigator  = createMaterialBottomTabNavigator(
                 barStyle: { backgroundColor: 'green' },  
             }  
         },  
-        Image: { screen: HomeScreen,  
+        Image: { screen: SideComponent,
             navigationOptions:{  
                 tabBarLabel:'Scan',  
                 tabBarIcon: ({ tintColor }) => (  
