@@ -1,14 +1,34 @@
-import React, { Component } from 'react';
-import { Image, ScrollView, Text, View } from 'react-native';
-import Login from './login';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { createStackNavigator,createAppContainer} from 'react-navigation'
+import LoginScreen from './loginscreen';
 
-
-export default class App extends Component {
+export default class App extends React.Component {
   render() {
     return (
-    
-      <Login />
-     
+      <AppContainer  />
     );
   }
 }
+
+
+const RootStack = createStackNavigator(
+  {
+      Loginscreen : LoginScreen
+  },
+  {
+    initialRouteName: 'Loginscreen',
+    headerMode: 'none'
+  }
+);
+
+const AppContainer = createAppContainer(RootStack);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

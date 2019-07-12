@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {StyleSheet, TouchableOpacity,TextInput,TouchableHighlight,Text,Image, View,Button,Alert,ScrollView} from 'react-native';  
-import Login from './login';
 import axios from 'axios';
 import { Header, ThemeProvider } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';  

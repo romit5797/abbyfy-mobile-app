@@ -2,9 +2,7 @@ import React from 'react';
 import {StyleSheet,ScrollView, TouchableHighlight,Text,Image, TextInput,View,Alert,Button} from 'react-native';  
 import { createAppContainer,createMaterialTopTabNavigator} from 'react-navigation';  
 import Icon from 'react-native-vector-icons/Ionicons';  
-import Inventory from './inventory';
 import axios from 'axios';
-import More from './more';
 import { Dropdown } from 'react-native-material-dropdown';
 import { Header, ThemeProvider } from 'react-native-elements';
 
