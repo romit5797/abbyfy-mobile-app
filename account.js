@@ -2,15 +2,8 @@ import React, { Component } from 'react';
 import {Dimensions,StyleSheet, TouchableOpacity,TouchableHighlight,Text,Image, View,Button,Alert,ScrollView} from 'react-native';  
 import { Header, ThemeProvider } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';  
-import TransM from './transfertomiddleman';
-import TransS from './transfertosuper';
-import TransD from './transfertodistributor';
-import TransR from './transfertoretailer';
-import addWhey from './addWhey';
-import addMiddleman from './addMiddleman';
-import addRetailer from './addRetailer';
-import addSuper from './addSuper';
-import addDistributor from './addDistributor';
+import MyOrders from './myorders';
+import MyAddresses from './myaddresses';
 import { createStackNavigator, createAppContainer } from 'react-navigation'; 
 
   class AccountInterface extends Component {
@@ -69,15 +62,13 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
  <View style={styles.headercontainer}>
           <View style={styles.navBar}>
   <View style={styles.leftContainer}>
-  <Icon style={[{color: "white"}]} size={15} name={'md-menu'} onPress={() => this.props.navigation.goBack()} />
-  </View>
-  <Text style={styles.text}>
-   Welcome,
+   </View>
+  <Text style={{color:'white',fontSize: 18, fontWeight: '600'}}>
+   PROFILE
   </Text>
   <View style={styles.rightContainer}>
     <View style={styles.rightIcon}>
-    <Icon style={[{color: "white"}]} size={15} name={'md-menu'} onPress={() => this.props.navigation.goBack()} />
-    </View>
+   </View>
     </View>
 </View>
 </View>
@@ -106,8 +97,8 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 const RootStack = createStackNavigator(
     {
         Loginscreen : AccountInterface,
-        Details1: AccountInterface,
-        Details2: AccountInterface,
+        Details1: MyOrders,
+        Details2: MyAddresses,
         Details3: AccountInterface,
         Details4: AccountInterface,
         Details4: AccountInterface,
@@ -228,7 +219,7 @@ const styles = StyleSheet.create({
         height:50,
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor:"#DCDCDC",
+        backgroundColor:"#F5F5F5",
         borderColor: "rgba(92,94,94,0.5)",
         borderWidth: 0.25,
         padding: 1

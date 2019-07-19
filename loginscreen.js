@@ -8,12 +8,12 @@ import {
     TouchableOpacity,
     Image,
     Animated,
-    Dimensions,
+    Dimensions,Alert,
     Keyboard,
     Platform
 } from "react-native";
-import { createStackNavigator, createAppContainer } from 'react-navigation'; 
-import Test from './test';
+import { createStackNavigator, createAppContainer ,NavigationActions } from 'react-navigation'; 
+import VerifyOtp from './verifyotp';
 import { Icon } from 'native-base'
 const SCREEN_HEIGHT = Dimensions.get('window').height
 import * as Animatable from 'react-native-animatable'
@@ -28,7 +28,8 @@ class LoginScreen extends Component {
         super()
 
         this.state = {
-            placeholderText: 'Enter your mobile number'
+            placeholderText: 'Enter your mobile number',
+            number: ''
         }
     }
     componentWillMount() {
@@ -125,10 +126,19 @@ class LoginScreen extends Component {
             duration: 500
         }).start()
     }
-    redirecttohome()
-    {
-        this.props.navigation.navigate('Details', {
-          });
+
+    FunctionToOpenSecondActivity = () =>
+  {
+        if(this.state.number.length==10)
+        {
+            this.props.navigation.navigate('NextScreen', {
+                phone: this.state.number
+              });
+
+        }else{
+           Alert.alert("Enter a valid mobile number")
+        }
+        
     }
     render() {
         const headerTextOpacity = this.loginHeight.interpolate({
@@ -193,7 +203,7 @@ class LoginScreen extends Component {
                         borderRadius: 30
                     }}
                 >
-                    <Icon name="md-arrow-forward" onPress={ () => { this.redirecttohome() } }   style={{ color: 'white' }} />
+                    <Icon name="md-arrow-forward"  onPress={() => this.FunctionToOpenSecondActivity() }   style={{ color: 'white' }} />
                 </Animated.View>
 
                 <ImageBackground
@@ -280,6 +290,7 @@ class LoginScreen extends Component {
                                             style={{ flex: 1, fontSize: 20 ,paddingTop:-10}}
                                             placeholder={this.state.placeholderText}
                                             underlineColorAndroid="transparent"
+                                            onChangeText={(number) => this.setState({number})}
                                         />
                                     </Animated.View>
                                 </Animated.View>
@@ -314,27 +325,6 @@ class LoginScreen extends Component {
 }
 
 
-const RootStack = createStackNavigator(
-    {
-        Loginscreen : LoginScreen,
-      Details: Test,
-    },
-    {
-      initialRouteName: 'Loginscreen',
-      headerMode: 'none'
-    }
-  );
-  
-  const AppContainer = createAppContainer(RootStack);
-  
-export default class LoginApp extends React.Component {
-    render() {
-      return <AppContainer />;
-    }
-  }
-
-  
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -342,3 +332,22 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }
 });
+
+const RootStack = createStackNavigator(
+    {
+        Default : LoginScreen,
+      NextScreen : VerifyOtp,
+    },
+    {
+      initialRouteName: 'Default',
+      headerMode: 'none'
+    }
+  );
+
+  const AppContainer = createAppContainer(RootStack);
+
+export default class LoginApp extends React.Component {
+    render() {
+      return <AppContainer />;
+    }
+  }

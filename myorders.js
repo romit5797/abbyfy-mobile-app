@@ -8,13 +8,25 @@ import {
     StatusBar,ScrollView,
     Image,Dimensions
 } from "react-native";
-import { createStackNavigator,createAppContainer} from 'react-navigation'
-import CartScreen2 from './cart2';
 import Icon from 'react-native-vector-icons/Ionicons';  
+import ItemDetails from './itemdetails';
+import { createStackNavigator,createAppContainer} from 'react-navigation'
 import { Container, Content, Header,Button, Left, Right, Item, Input, Card, CardItem } from 'native-base'
-import ItemCard from './itemscard';
+import OrderCard from './ordercard';
 
-class CartScreen extends Component {
+class MyOrders extends Component {
+
+      onClickListener() {
+       
+        this.props.navigation.navigate("Details", {
+            itemName:"Kitkat",
+            itemCreator:"Nestle",
+            itemPrice:"₹10",
+            imageUri:'https://images-na.ssl-images-amazon.com/images/I/81hbTpUm6EL._SX385_.jpg'
+           
+        });
+      }
+
     render() {
         return (
             <View>
@@ -24,7 +36,7 @@ class CartScreen extends Component {
   <View style={styles.leftContainer}>
   </View>
   <Text style={{color:'white',fontSize: 18, fontWeight: '600'}}>
-   SHOPPING CART
+   MY ORDERS
   </Text>
   <View style={styles.rightContainer}>
     <View style={styles.rightIcon}>
@@ -34,118 +46,39 @@ class CartScreen extends Component {
 </View>
                <ScrollView  scrollEventThrottle={16}>
                <Text style={{ fontSize: 16, fontWeight: '700', paddingHorizontal: 20  }}>
-                                Items
+                                Order No: 1111-2222-3333
                             </Text>
+                            <TouchableOpacity  onPress={() => this.onClickListener()}>
                     <Card style={{ marginLeft: 5, marginRight: 5 }}>
 
-                        <ItemCard
-                            itemName="You can heal your life"
-                            itemCreator="Louise Hay"
-                            itemPrice="$10"
-                            savings="2.5"
-                            imageUri={{uri:'https://forthemommas.com/wp-content/uploads/2015/10/childrens-cold-relief.jpg'}}
-                            rating={5}
+                        <OrderCard
+                            itemName="Maggi"
+                            itemCreator="Nestle"
+                            itemPrice="₹10"
+                            imageUri={{uri:'https://images-na.ssl-images-amazon.com/images/I/812o4EQXPKL._SL1500_.jpg'}}
+                          
 
                         />
                        
 
                     </Card>
-
+                    </TouchableOpacity>
+                    <TouchableOpacity  onPress={() => this.onClickListener()}>
                     <Card style={{ marginLeft: 5, marginRight: 5 }}>
 
-                        <ItemCard
-                            itemName="You can heal your life"
-                            itemCreator="Louise Hay"
-                            itemPrice="$10"
-                            savings="2.5"
-                            imageUri={{uri:'https://forthemommas.com/wp-content/uploads/2015/10/childrens-cold-relief.jpg'}}
-                            rating={5}
+                        <OrderCard
+                            itemName="Kitkat"
+                            itemCreator="Nestle"
+                            itemPrice="₹10"
+                            imageUri={{uri:'https://images-na.ssl-images-amazon.com/images/I/81hbTpUm6EL._SX385_.jpg'}}
+                           
 
                         />
                        
 
                     </Card>
+                    </TouchableOpacity>
 
-                    <Text style={{ fontSize: 16, fontWeight: '700', paddingHorizontal: 20  }}>
-                                Order details
-                            </Text>
-
-                    <Card style={{ marginLeft: 5, marginRight: 5 }}>
-                    <CardItem style={{ marginTop: 5 }}>
-                    <Left>
-              <Text>Total MRP</Text>
-              </Left>
-              <Right>
-              <Text>₹2999</Text>
-              </Right>
-              </CardItem>
-
-              <CardItem style={{ marginTop: 5 }}>
-              <Left>
-              <Text>Discount</Text>
-              </Left>
-              <Right>
-              <Text>₹499</Text>
-              </Right>
-              </CardItem>
-
-              <CardItem style={{ marginTop: 5 }}>
-              <Left>
-              <Text>Tax</Text>
-              </Left>
-              <Right>
-              <Text>₹500</Text>
-              </Right>
-              </CardItem>
-
-              <CardItem style={{ marginTop: 5 }}>
-              <Left>
-              <Text>Coupon Discount</Text>
-              </Left>
-              <Right>
-              <Text>₹2999</Text>
-              </Right>
-              </CardItem>
-
-              <CardItem style={{ marginTop: 5 }}>
-              <Left>
-              <Text>Total MRP</Text>
-              </Left>
-              <Right>
-              <Text>₹2999</Text>
-              </Right>
-              </CardItem>
-              
-              <CardItem style={{ marginTop: 5 }}>
-              <Left>
-              <Text>Delivery Charges</Text>
-              </Left>
-              <Right>
-              <Text>₹0</Text>
-              </Right>
-              </CardItem>
-             
-  <View style={{
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,marginLeft:5,marginRight:5
-  }}
-/>
-<CardItem style={{ marginTop: 5 }}>
-              <Left>
-              <Text>Total</Text>
-              </Left>
-              <Right>
-              <Text>₹3000</Text>
-              </Right>
-
-             </CardItem>
-           </Card>
-           
-           <Card style={{ marginLeft: 5, marginRight: 5 }}>
-           <Button full success onPress={() => this.props.navigation.navigate('Details')}>
-            <Text>PLACE ORDER</Text>
-          </Button>
-          </Card>
           <View style={{ marginBottom: 100 }}/>
                     </ScrollView>
             </View>
@@ -154,26 +87,24 @@ class CartScreen extends Component {
 }
 
 const RootStack = createStackNavigator(
-  {
-      Loginscreen : CartScreen,
-      Details: CartScreen2
-  },
-  {
-    initialRouteName: 'Loginscreen',
-    headerMode: 'none'
+    {
+        Loginscreen : MyOrders,
+        Details: ItemDetails,
+    },
+    {
+      initialRouteName: 'Loginscreen',
+      headerMode: 'none'
+    }
+  );
+  
+  const AppContainer = createAppContainer(RootStack);
+  export default class OrdersApp extends React.Component {
+    render() {
+      return (
+        <AppContainer  />
+      );
+    }
   }
-);
-
-const AppContainer = createAppContainer(RootStack);
-export default class Cart extends React.Component {
-  render() {
-    return (
-     <AppContainer />
-    );
-  }
-}
-
-
 
 const styles = StyleSheet.create({
     container: {

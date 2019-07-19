@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {
-    View,
+    View,Button,
     Text,
     StyleSheet,
     TouchableOpacity,
@@ -8,13 +8,12 @@ import {
     StatusBar,ScrollView,
     Image,Dimensions
 } from "react-native";
-import { createStackNavigator,createAppContainer} from 'react-navigation'
-import CartScreen2 from './cart2';
+import AddAddress from './addAddress';
 import Icon from 'react-native-vector-icons/Ionicons';  
-import { Container, Content, Header,Button, Left, Right, Item, Input, Card, CardItem } from 'native-base'
+import { Container, Content, Header,Left,Body,ListItem, Right, Item, Input, Card, CardItem } from 'native-base'
 import ItemCard from './itemscard';
-
-class CartScreen extends Component {
+import { createStackNavigator, createAppContainer } from 'react-navigation'; 
+class MyAddresses extends Component {
     render() {
         return (
             <View>
@@ -22,9 +21,9 @@ class CartScreen extends Component {
            <View style={styles.headercontainer}>
           <View style={styles.navBar}>
   <View style={styles.leftContainer}>
-  </View>
+ </View>
   <Text style={{color:'white',fontSize: 18, fontWeight: '600'}}>
-   SHOPPING CART
+   ADDRESS
   </Text>
   <View style={styles.rightContainer}>
     <View style={styles.rightIcon}>
@@ -33,119 +32,86 @@ class CartScreen extends Component {
 </View>
 </View>
                <ScrollView  scrollEventThrottle={16}>
-               <Text style={{ fontSize: 16, fontWeight: '700', paddingHorizontal: 20  }}>
-                                Items
-                            </Text>
-                    <Card style={{ marginLeft: 5, marginRight: 5 }}>
 
-                        <ItemCard
-                            itemName="You can heal your life"
-                            itemCreator="Louise Hay"
-                            itemPrice="$10"
-                            savings="2.5"
-                            imageUri={{uri:'https://forthemommas.com/wp-content/uploads/2015/10/childrens-cold-relief.jpg'}}
-                            rating={5}
-
-                        />
-                       
-
-                    </Card>
-
-                    <Card style={{ marginLeft: 5, marginRight: 5 }}>
-
-                        <ItemCard
-                            itemName="You can heal your life"
-                            itemCreator="Louise Hay"
-                            itemPrice="$10"
-                            savings="2.5"
-                            imageUri={{uri:'https://forthemommas.com/wp-content/uploads/2015/10/childrens-cold-relief.jpg'}}
-                            rating={5}
-
-                        />
-                       
-
-                    </Card>
-
-                    <Text style={{ fontSize: 16, fontWeight: '700', paddingHorizontal: 20  }}>
-                                Order details
-                            </Text>
-
-                    <Card style={{ marginLeft: 5, marginRight: 5 }}>
+               <TouchableOpacity onPress={() => this.props.navigation.navigate('Details')}>
+               <Card style={{ marginLeft: 5, marginRight: 5,marginBottom:10 }}>
                     <CardItem style={{ marginTop: 5 }}>
-                    <Left>
-              <Text>Total MRP</Text>
-              </Left>
-              <Right>
-              <Text>₹2999</Text>
-              </Right>
-              </CardItem>
+                    <Text style={{color:'blue'}}>+ ADD NEW ADDRESS</Text>
+                    </CardItem>
+                    </Card>
+                </TouchableOpacity>
+               <Text style={{ fontSize: 16, fontWeight: '700', paddingHorizontal: 20  }}>
+                                Default Address
+                            </Text>
+                    
+                            <Card style={{ marginLeft: 5, marginRight: 5 }}>
+                    <CardItem style={{ marginTop: 5 }}>
+                   
+                    <Body>
 
-              <CardItem style={{ marginTop: 5 }}>
-              <Left>
-              <Text>Discount</Text>
-              </Left>
-              <Right>
-              <Text>₹499</Text>
-              </Right>
-              </CardItem>
 
-              <CardItem style={{ marginTop: 5 }}>
-              <Left>
-              <Text>Tax</Text>
-              </Left>
-              <Right>
-              <Text>₹500</Text>
-              </Right>
-              </CardItem>
-
-              <CardItem style={{ marginTop: 5 }}>
-              <Left>
-              <Text>Coupon Discount</Text>
-              </Left>
-              <Right>
-              <Text>₹2999</Text>
-              </Right>
-              </CardItem>
-
-              <CardItem style={{ marginTop: 5 }}>
-              <Left>
-              <Text>Total MRP</Text>
-              </Left>
-              <Right>
-              <Text>₹2999</Text>
-              </Right>
-              </CardItem>
-              
-              <CardItem style={{ marginTop: 5 }}>
-              <Left>
-              <Text>Delivery Charges</Text>
-              </Left>
-              <Right>
-              <Text>₹0</Text>
-              </Right>
-              </CardItem>
-             
+                    <Text style={{ color:'black',fontSize: 16,paddingBottom:10}}>Ram Prasad</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>House no. 32</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Rehari,</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Jammu, 180001</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14,paddingBottom:5}}>Jammu and Kashmir</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Mobile: 7889009009</Text>
+                     
+                       
+            </Body>       
+                    </CardItem>
+                               
   <View style={{
     borderBottomColor: 'black',
     borderBottomWidth: 1,marginLeft:5,marginRight:5
   }}
 />
-<CardItem style={{ marginTop: 5 }}>
-              <Left>
-              <Text>Total</Text>
-              </Left>
-              <Right>
-              <Text>₹3000</Text>
-              </Right>
+<CardItem>
+<View style={styles.container}>
+     <View style={styles.buttonContainer}>
+     <TouchableOpacity
+         
+          underlayColor='#fff'>
+          <Text style={{color:'blue',textAlignVertical: "center",textAlign: "center"}}>EDIT</Text>
+ </TouchableOpacity>
+    </View>
+   
+    <View style={styles.buttonContainer2}>
+    <TouchableOpacity
+         
+         
+          underlayColor='#fff'>
+          <Text style={{color:'blue',textAlignVertical: "center",textAlign: "center"}}>REMOVE</Text>
+ </TouchableOpacity>
+    </View>
+  </View>
+</CardItem>
+                    </Card>
 
-             </CardItem>
-           </Card>
+                    <Text style={{ fontSize: 16, fontWeight: '700', paddingHorizontal: 20  }}>
+                                Other Addresses
+                            </Text>
+
+                                          
+                            <Card style={{ marginLeft: 5, marginRight: 5 }}>
+                    <CardItem style={{ marginTop: 5 }}>
+
+                  
+       
+                   
+                    <Body>
+                    <Text style={{ color:'black',fontSize: 16,paddingBottom:10}}>Ram Prasad</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>House no. 32</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Gandhi Nagar,</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Jammu, 180001</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14,paddingBottom:5}}>Jammu and Kashmir</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Mobile: 7889009009</Text>
+                         </Body>
            
-           <Card style={{ marginLeft: 5, marginRight: 5 }}>
-           <Button full success onPress={() => this.props.navigation.navigate('Details')}>
-            <Text>PLACE ORDER</Text>
-          </Button>
-          </Card>
+          
+         
+                    </CardItem>
+                    </Card>
           <View style={{ marginBottom: 100 }}/>
                     </ScrollView>
             </View>
@@ -155,32 +121,41 @@ class CartScreen extends Component {
 
 const RootStack = createStackNavigator(
   {
-      Loginscreen : CartScreen,
-      Details: CartScreen2
+      DefaultScreen : MyAddresses,
+    Details: AddAddress,
   },
   {
-    initialRouteName: 'Loginscreen',
+    initialRouteName: 'DefaultScreen',
     headerMode: 'none'
   }
 );
 
 const AppContainer = createAppContainer(RootStack);
-export default class Cart extends React.Component {
+
+export default class Address extends React.Component {
   render() {
-    return (
-     <AppContainer />
-    );
+    return <AppContainer screenProps={this.props.navigation.state.params.phone}/>;
   }
 }
+
 
 
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
-    },
+        justifyContent: 'center',
+      },
+      buttonContainer: {
+        flex: 1,
+        borderRightColor: 'black',
+        borderRightWidth:1
+      },
+      buttonContainer2: {
+        flex: 1
+      },
     androidHeader: {
         ...Platform.select({
             android: {

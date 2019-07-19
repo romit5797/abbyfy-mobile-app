@@ -8,9 +8,8 @@ import { SearchBar ,Header, ThemeProvider } from 'react-native-elements';
 import { Dimensions } from 'react-native'
 import SubCategory from './subcategories';
 const { height, width } = Dimensions.get('window')
-import Grocery from './grocery';
 
-export default class Categories extends React.Component {
+export default class Grocery extends React.Component {
   constructor(props) {
     super(props);
  
@@ -23,33 +22,7 @@ export default class Categories extends React.Component {
   render() {
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <View>
-
-            <View style={styles.headercontainer}>
-          <View style={styles.navBar}>
-  <View style={styles.leftContainer}>
- </View>
-  <Text style={{color:'white',fontSize: 18, fontWeight: '600'}}>
-   CATEGORIES
-  </Text>
-  <View style={styles.rightContainer}>
-    <View style={styles.rightIcon}>
-    </View>
-    </View>
-</View>
-<View style={styles.inputContainer}>
-<Icon name="md-search" size={25} style={{ marginLeft: 5,color:"#C0C0C0" }} />
-          <TextInput style={styles.inputs}
-              placeholder="Search products & brands"
-              keyboardType="email-address"
-              underlineColorAndroid='transparent'
-              onChangeText={(search) => this.setState({search})}/>
-
-</View>
-</View>
-
-
-      
+        <View>      
         <ScrollView style={styles.scroller}
                         scrollEventThrottle={16}
                     >
@@ -85,31 +58,6 @@ export default class Categories extends React.Component {
                         </View>
 
 
-                        <View style={{ marginTop: 40 }}>
-                            <Text style={{ fontSize: 24, fontWeight: '700', paddingHorizontal: 20 }}>
-                                Health & OTC
-                            </Text>
-                            <View style={{ paddingHorizontal: 20, marginTop: 20, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-                            <SubCategory 
-                                        width={width}
-                                        imageUri={{uri:'https://images.costco-static.com/ImageDelivery/imageService?profileId=12026539&itemId=1149163-894&recipeName=680'}}
-                                        name="Honey"
-                                    />
-                             <SubCategory 
-                                        width={width}
-                                        imageUri={{uri:'https://forthemommas.com/wp-content/uploads/2015/10/childrens-cold-relief.jpg'}}
-                                        name="Cough & cold relievers"
-                                    />
-                             <SubCategory 
-                                        width={width}
-                                        imageUri={{uri:'http://www.gmarthd.com/image/cache/catalog/categoryimage/Beverages/energy-and-health-drinks/health-drinks-250x250.jpg'}}
-                                        name="Health drinnk"
-                                    />
-
-                                
-                            </View>
-                        </View>
-                        <View style={{ marginBottom: 100 }}/>
                     </ScrollView>
 
 

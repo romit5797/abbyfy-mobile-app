@@ -8,10 +8,8 @@ import {
     StatusBar,ScrollView,
     Image,Dimensions
 } from "react-native";
-import { createStackNavigator,createAppContainer} from 'react-navigation'
-import CartScreen2 from './cart2';
 import Icon from 'react-native-vector-icons/Ionicons';  
-import { Container, Content, Header,Button, Left, Right, Item, Input, Card, CardItem } from 'native-base'
+import { Container, Content, Body,Header,Button, Left, Right, Item, Input, Card, CardItem } from 'native-base'
 import ItemCard from './itemscard';
 
 class CartScreen extends Component {
@@ -24,7 +22,7 @@ class CartScreen extends Component {
   <View style={styles.leftContainer}>
   </View>
   <Text style={{color:'white',fontSize: 18, fontWeight: '600'}}>
-   SHOPPING CART
+   ADDRESS
   </Text>
   <View style={styles.rightContainer}>
     <View style={styles.rightIcon}>
@@ -33,6 +31,51 @@ class CartScreen extends Component {
 </View>
 </View>
                <ScrollView  scrollEventThrottle={16}>
+               <Card style={{ marginLeft: 5, marginRight: 5,marginTop:10 , marginBottom:10}}>
+                    <CardItem style={{ marginTop: 5 }}>
+                   
+                    <Body>
+
+
+                    <Text style={{ color:'black',fontSize: 16,paddingBottom:10}}>Ram Prasad <Text style={{ color:'#7c7c7f',fontSize: 14}}>(Default)</Text></Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>House no. 32</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Rehari,</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Jammu, 180001</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14,paddingBottom:5}}>Jammu and Kashmir</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Mobile: 7889009009</Text>
+                     
+                       
+            </Body>       
+                    </CardItem>
+                               
+  <View style={{
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,marginLeft:5,marginRight:5
+  }}
+/>
+<CardItem>
+<View style={styles.container}>
+     <View style={styles.buttonContainer}>
+     <TouchableOpacity
+         
+          underlayColor='#fff'>
+          <Text style={{color:'blue',textAlignVertical: "center",textAlign: "center"}}>EDIT/CHANGE</Text>
+ </TouchableOpacity>
+    </View>
+   
+    <View style={styles.buttonContainer2}>
+    <TouchableOpacity
+         
+         
+          underlayColor='#fff'>
+          <Text style={{color:'blue',textAlignVertical: "center",textAlign: "center"}}>ADD NEW ADDRESS</Text>
+ </TouchableOpacity>
+    </View>
+  </View>
+</CardItem>
+                    </Card>
+
+
                <Text style={{ fontSize: 16, fontWeight: '700', paddingHorizontal: 20  }}>
                                 Items
                             </Text>
@@ -142,7 +185,7 @@ class CartScreen extends Component {
            </Card>
            
            <Card style={{ marginLeft: 5, marginRight: 5 }}>
-           <Button full success onPress={() => this.props.navigation.navigate('Details')}>
+           <Button full success>
             <Text>PLACE ORDER</Text>
           </Button>
           </Card>
@@ -152,35 +195,23 @@ class CartScreen extends Component {
         );
     }
 }
-
-const RootStack = createStackNavigator(
-  {
-      Loginscreen : CartScreen,
-      Details: CartScreen2
-  },
-  {
-    initialRouteName: 'Loginscreen',
-    headerMode: 'none'
-  }
-);
-
-const AppContainer = createAppContainer(RootStack);
-export default class Cart extends React.Component {
-  render() {
-    return (
-     <AppContainer />
-    );
-  }
-}
-
-
+export default CartScreen;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
-    },
+        justifyContent: 'center',
+      },
+      buttonContainer: {
+        flex: 1,
+        borderRightColor: 'black',
+        borderRightWidth:1
+      },
+      buttonContainer2: {
+        flex: 1
+      },
     androidHeader: {
         ...Platform.select({
             android: {

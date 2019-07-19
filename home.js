@@ -1,6 +1,6 @@
 import React from 'react';  
-import {StyleSheet, TouchableHighlight,Text,TextInput,Image, View,Button,ScrollView,SafeAreaView} from 'react-native';  
-import { createBottomTabNavigator, createAppContainer} from 'react-navigation';  
+import {StyleSheet, TouchableOpacity,Text,TextInput,Image, View,Button,ScrollView,SafeAreaView} from 'react-native';  
+import { createStackNavigator, createAppContainer } from 'react-navigation';  
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';  
 import Icon from 'react-native-vector-icons/Ionicons';  
 import Slideshow from 'react-native-image-slider-show';
@@ -8,8 +8,11 @@ import { SearchBar ,Header, ThemeProvider } from 'react-native-elements';
 import { Dimensions } from 'react-native'
 import Category from './category';
 import HomeCard from './homecard';
+import Product from './product';
+import Grocery from './grocery';
 const { height, width } = Dimensions.get('window')
-export default class SlideshowTest extends React.Component {
+
+class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
  
@@ -57,14 +60,14 @@ export default class SlideshowTest extends React.Component {
             <View style={styles.headercontainer}>
           <View style={styles.navBar}>
   <View style={styles.leftContainer}>
-  <Icon style={[{color: "white"}]} size={15} name={'md-menu'} onPress={() => this.props.navigation.goBack()} />
-  </View>
-  <Text style={styles.text}>
+  <Text style={{color:'white',fontSize: 20, fontWeight: '600',paddingBottom:5}}>
    Abbyfy
   </Text>
+  </View>
+ 
   <View style={styles.rightContainer}>
     <View style={styles.rightIcon}>
-    <Icon style={[{color: "white"}]} size={15} name={'md-menu'} onPress={() => this.props.navigation.goBack()} />
+    <Icon style={[{color: "white"}]} size={20} name={'md-cart'} onPress={() => this.props.navigation.goBack()} />
     </View>
     </View>
 </View>
@@ -85,11 +88,14 @@ export default class SlideshowTest extends React.Component {
                         scrollEventThrottle={16}
                     >
                       <View style={styles.slidercontainer}>
+
+                     
  <Slideshow 
         height={Dimensions.get('window').height*0.2}
         dataSource={this.state.dataSource}
         position={this.state.position}
-        onPositionChanged={position => this.setState({ position })} />
+        onPositionChanged={position => this.setState({ position })} 
+        onPress={() => this.props.navigation.navigate('Details1')} />
         </View>
 
                         <View style={{ flex: 1, backgroundColor: 'white', paddingTop: 20 }}>
@@ -98,23 +104,33 @@ export default class SlideshowTest extends React.Component {
                             </Text>
 
                             <View style={{ height: 130, marginTop: 20 }}>
+                           
                                 <ScrollView
                                     horizontal={true}
                                     showsHorizontalScrollIndicator={false}
                                 >
+                                
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Details2')}>
                                     <Category imageUri={{uri:'https://www.winnipeggrocery.com/images/10788252_l.png'}}
                                         name="Groceries"
                                     />
+                                    </TouchableOpacity>
+
+                                     <TouchableOpacity onPress={() => this.props.navigation.navigate('Details2')}>
                                      <Category imageUri={{uri:'http://www.crystalplastindustries.com/img/products/homecare.jpg'}}
                                         name="Homecare"
                                     />
+                                    </TouchableOpacity>
+
                                      <Category imageUri={{uri:'http://micktimes.com/wp-content/uploads/2019/03/Personal-Care-Products-990x557.jpg'}}
                                         name="Personal care"
                                     />
                                      <Category imageUri={{uri:'https://puretekcorp.com/wp-content/uploads/2019/02/puretek-brands.jpg'}}
                                         name="Health & OTC"
                                     />
+                                   
                                 </ScrollView>
+                                
                             </View>
                             <View style={{ marginTop: 40, paddingHorizontal: 20 }}>
                                 <Text style={{ fontSize: 24, fontWeight: '700' }}>
@@ -137,6 +153,8 @@ export default class SlideshowTest extends React.Component {
                             <Text style={{ fontSize: 24, fontWeight: '700', paddingHorizontal: 20 }}>
                                 Products for you
                             </Text>
+
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Details1')}>
                             <View style={{ paddingHorizontal: 20, marginTop: 20, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
                                 <HomeCard width={width}
                                      imageUri={{uri:'https://5.imimg.com/data5/BH/PL/MY-7778582/maggi-noodles-500x500.jpg'}}
@@ -169,6 +187,7 @@ export default class SlideshowTest extends React.Component {
 
 
                             </View>
+                            </TouchableOpacity>
                         </View>
                         <View style={{ marginBottom: 100 }}/>
                     </ScrollView>
@@ -273,8 +292,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'green',
       },
       rightIcon: {
-        height: 10,
-        width: 10,
+        paddingBottom:5,
+        paddingRight:10,
         resizeMode: 'contain',
         backgroundColor: 'green',
       },
@@ -300,3 +319,32 @@ const styles = StyleSheet.create({
       justifyContent: 'center'
     }
     });
+
+    const RootStack = createStackNavigator(
+      {
+          Loginscreen : HomeScreen,
+          Details1: Product,
+          Details2: Grocery,
+        
+       
+      },
+      {
+        initialRouteName: 'Loginscreen',
+        headerMode: 'none'
+      }
+    );
+    
+    const AppContainer = createAppContainer(RootStack);
+     
+    export default class Home extends React.Component {
+      
+      render() {
+        return(
+          <AppContainer/>
+        );
+        
+      }
+    }
+    
+    
+    
