@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
-import {Dimensions,StyleSheet, TouchableOpacity,TouchableHighlight,Text,Image, View,Button,Alert,ScrollView} from 'react-native';  
+import {Dimensions,AsyncStorage,StyleSheet, TouchableOpacity,TouchableHighlight,Text,Image, View,Button,Alert,ScrollView} from 'react-native';  
 import { Header, ThemeProvider } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';  
 import MyOrders from './myorders';
 import MyAddresses from './myaddresses';
-import { createStackNavigator, createAppContainer } from 'react-navigation'; 
+import App from './App';
+import {createStackNavigator,StackActions,SwitchActions,NavigationActions, createAppContainer } from 'react-navigation'; 
 
-  class AccountInterface extends Component {
+const resetAction = StackActions.reset({
+  index: 0,
+  key:null,
+  actions: [NavigationActions.navigate({ routeName: 'Details10' })],
+});
+
+ export default class AccountInterface extends Component {
     constructor(){
         super() 
           this.state = {
@@ -18,14 +25,22 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 
       onClickListener(val) {
         let str = "Details"+val;
-        this.props.navigation.navigate(str, {
-        });
+        if(str=="Details10")
+        {
+          AsyncStorage.removeItem('phone');
+           AsyncStorage.removeItem('loggedin');
+           
+           this.props.navigation.dispatch(resetAction);
+        }
+        else{
+          this.props.navigation.navigate(str, {
+          });
+        }
+         
+        
+        
       }
 
-      goBack()
-      {
-        Alert.alert("back button pressed");
-      }
 
     myoptions(val1,val2,val3,val4)
     {
@@ -83,7 +98,7 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
            {this.myoptions("Profile Details","Change your profile details & password","md-person-add",7) }
            {this.myoptions("Legal","Policies with terms & conditions","md-paper",8) }
            {this.myoptions("Rate the App","Rate our app on playstore","md-star",9) }
-           {this.myoptions("Sign out","Sign out from this account","md-power",10) }
+           {this.myoptions("Sign out","Sign out from this account","md-exit",10) }
            <View style={{ marginBottom: 100 }}/>
            </ScrollView>
         </View>
@@ -94,40 +109,7 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
   }
 }
 
-const RootStack = createStackNavigator(
-    {
-        Loginscreen : AccountInterface,
-        Details1: MyOrders,
-        Details2: MyAddresses,
-        Details3: AccountInterface,
-        Details4: AccountInterface,
-        Details4: AccountInterface,
-        Details5: AccountInterface,
-        Details6: AccountInterface,
-        Details7: AccountInterface,
-        Details8: AccountInterface,
-        Details9: AccountInterface,
-        Details10: AccountInterface,
-     
-    },
-    {
-      initialRouteName: 'Loginscreen',
-      headerMode: 'none'
-    }
-  );
-  
-  const AppContainer = createAppContainer(RootStack);
-   
-  export default class Account extends Component {
-    
-    render() {
-      return(
-        <AppContainer/>
-      );
-      
-    }
-  }
-  
+
   
   
 
@@ -146,7 +128,7 @@ const styles = StyleSheet.create({
       },
       listItemContainer: {
         
-        height:75,
+        height:Dimensions.get('window').height*0.2,
         width:Dimensions.get('window').width,
         flexDirection: "row",
         alignItems: "center",

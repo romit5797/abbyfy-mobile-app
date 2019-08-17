@@ -6,11 +6,12 @@ import {StyleSheet,
   TextInput,
   Button,
   TouchableHighlight,Keyboard,
-  Image,
+  Image,AsyncStorage,
   Alert } from 'react-native';
   import Icon from 'react-native-vector-icons/Ionicons';  
   import { createStackNavigator, createAppContainer } from 'react-navigation'; 
   import axios from 'axios';
+  import Test from './test';
   import GpsRequest from './gpsrequest';
   import { Dropdown } from 'react-native-material-dropdown';
   import { Header,ThemeProvider } from 'react-native-elements';
@@ -21,7 +22,8 @@ class Otp extends Component {
     super(props);
     state = {
       email   : '',
-      otp: null
+      otp: null,
+      phoneno:null
     }
    
   }
@@ -31,8 +33,29 @@ class Otp extends Component {
    
      if(this.state.otp == this.state.email){
       this.setState({otp : null});
-        this.props.navigation.navigate('Details', {
-        });
+      AsyncStorage.setItem('loggedin', 'true');
+     
+     
+      axios.post('http://35.229.19.138:8080/existinguser/', {
+        phone : '+91'+this.props.screenProps
+       })
+       .then((response) => {
+        if(response.data.output.length==0)
+        {
+          this.props.navigation.navigate('Details', {
+          });
+        }
+        else{
+          this.props.navigation.navigate('Details2', {
+          });
+        }
+       })
+       .catch((e) => 
+       {
+         console.error(e);
+       });
+
+       
       }
    else{
      Alert.alert("Invalid OTP")
@@ -52,7 +75,7 @@ class Otp extends Component {
     })
     .catch((e) => 
     {
-      Alert.alert(e);
+      Alert.alert("Error,check your internet"+e);
     });
     this.setState({otp : randno});
   }
@@ -180,7 +203,8 @@ inputIcon:{
 const RootStack = createStackNavigator(
     {
         DefaultScreen : Otp,
-      Details: GpsRequest,
+        Details: GpsRequest,
+        Details2: Test,
     },
     {
       initialRouteName: 'DefaultScreen',

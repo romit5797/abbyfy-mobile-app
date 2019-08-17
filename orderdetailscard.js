@@ -12,19 +12,36 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Container, Content, Header,Button, Left, Right, Item, Input, Card, CardItem } from 'native-base'
 import OrderCard from './ordercard';
 
-class ItemDetails extends Component {
+class OrderDetails extends Component {
+
+  getMonthFromString(mon){
+    var m;
+    if(mon.substring(0,1)==0)
+    {
+     m=mon.substring(1,2)-1;
+    }
+    else
+    {
+        m=mon-1;
+    }
+    
+    var date = new Date(2009, m , 10);  // 2009-11-10
+    var month = date.toLocaleString('default', { month: 'long' });
+   
+    return month;
+  }
 
     render() {
         return (
-            <View style={{ backgroundColor:'#fcfcfc'}}>
+            <View>
            
            <View style={styles.headercontainer}>
           <View style={styles.navBar}>
   <View style={styles.leftContainer}>
 
   </View>
-  <Text style={styles.text}>
-  Item Details
+  <Text style={{ color: 'white'}}>
+  Order Details
   </Text>
   <View style={styles.rightContainer}>
     <View style={styles.rightIcon}>
@@ -33,18 +50,14 @@ class ItemDetails extends Component {
     </View>
 </View>
 </View>
-               <ScrollView  scrollEventThrottle={16}  >
+               <ScrollView  scrollEventThrottle={16} style={{ backgroundColor:'#fcfcfc'}} >
               
                <CardItem style={{ marginTop: 5 }}>
 
-<View>
-    <Image style={{ height: 150, width: 100 }}
-        source={{uri:this.props.navigation.state.params.imageUri}} />
-</View>
-<Right style={{ flex: 1, alignItems: 'flex-start', height: 200, paddingHorizontal: 20 }}>
-    <Text>{this.props.navigation.state.params.itemName}</Text>
-    <Text style={{ color: 'grey', fontSize: 11 }}>{this.props.navigation.state.params.itemCreator}</Text>
-    <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#c4402f' }}>{(this.props.navigation.state.params.itemTotal).toFixed(2)}</Text>
+<View style={{ flex: 1, alignItems: 'flex-start', paddingHorizontal: 20 }}>
+    <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#c4402f' }}>Placed on: <Text style={{ color: 'grey', fontSize: 11 }}> {this.props.navigation.state.params.placedon!=null ? (this.props.navigation.state.params.placedon).substring(8,10)+" "+this.getMonthFromString((this.props.navigation.state.params.placedon).substring(5,7))+" "+ (this.props.navigation.state.params.placedon).substring(0,4) : null }</Text></Text>
+    <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#c4402f',paddingBottom:10 }}>Order No.: <Text style={{ color: 'grey', fontSize: 11 }}>{this.props.navigation.state.params.orderno}</Text></Text>
+    <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#c4402f' }}>Price Details:</Text>
 
     <View style={styles.navBar2}>
    <View style={styles.leftContainer}>
@@ -54,7 +67,7 @@ MRP
 </View>
 <View style={styles.rightContainer}>
 <Text style={{ color: 'grey', fontWeight: '300', fontSize: 11 }}>
-₹{(this.props.navigation.state.params.itemMrp).toFixed(2)}
+{(this.props.navigation.state.params.mrp).toFixed(2)}
 </Text>
 </View>
 </View>
@@ -73,6 +86,19 @@ GST
 </View>
 </View>
 
+<View style={styles.navBar}>
+   <View style={styles.leftContainer}>
+   <Text style={{ color: 'grey', fontWeight: '300', fontSize: 11 }}>
+Coupon Discount
+</Text>
+</View>
+<View style={styles.rightContainer}>
+<Text style={{ color: 'grey', fontWeight: '300', fontSize: 11 }}>
+₹{(this.props.navigation.state.params.coupondiscount).toFixed(2)}
+</Text>
+</View>
+</View>
+
 
 <View style={styles.navBar}>
    <View style={styles.leftContainer}>
@@ -82,7 +108,7 @@ Item Discount
 </View>
 <View style={styles.rightContainer}>
 <Text style={{ color: 'grey', fontWeight: '300', fontSize: 11 }}>
-₹{(this.props.navigation.state.params.itemDiscount).toFixed(2)}
+₹{(this.props.navigation.state.params.discount).toFixed(2)}
 </Text>
 </View>
 </View>
@@ -95,7 +121,7 @@ Pay On Delivery
 </View>
 <View style={styles.rightContainer}>
 <Text style={{ color: 'grey', fontWeight: '300', fontSize: 11 }}>
-₹{(this.props.navigation.state.params.itemTotal).toFixed(2)}
+₹{(this.props.navigation.state.params.total).toFixed(2)}
 </Text>
 </View>
 </View>
@@ -108,13 +134,27 @@ Total:
 </View>
 <View style={styles.rightContainer}>
 <Text style={{ color: 'black', fontWeight: '600', fontSize: 13 }}>
-₹{(this.props.navigation.state.params.itemTotal).toFixed(2)}
+₹{(this.props.navigation.state.params.total).toFixed(2)}
 </Text>
 </View>
 </View>
 
+
+    <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#c4402f' ,paddingTop:20}}>Updates sent to:</Text>
+    <Text style={{ color: 'grey', fontSize: 11 }}><Icon style={[{color: "grey"}]} size={10} name={'md-call'} onPress={() => this.props.navigation.navigate('Cart')} />
+    {" "+this.props.navigation.state.params.phoneno}</Text>
+
+    <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#c4402f' ,paddingTop:20}}>Shipping Address:</Text>
+    <Text style={{ color: 'black',fontWeight:'600', fontSize: 11 }}>{this.props.navigation.state.params.firstname+" "+this.props.navigation.state.params.lastname}</Text>
+    <Text style={{ color: 'grey', fontSize: 11 }}>{this.props.navigation.state.params.flat+","+this.props.navigation.state.params.area}</Text>
+    <Text style={{ color: 'grey', fontSize: 11 }}>{this.props.navigation.state.params.town+","+this.props.navigation.state.params.state+","+this.props.navigation.state.params.pincode}</Text>
+
+
+    <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#c4402f' ,paddingTop:20}}>Payment Mode</Text>
+    <Text style={{ color: 'grey', fontSize: 11 }}>Pay On Delivery</Text>
+
     
-</Right>
+</View>
 </CardItem>
 
           <View style={{ marginBottom: 100 }}/>
@@ -123,7 +163,7 @@ Total:
         );
     }
 }
-export default ItemDetails;
+export default OrderDetails;
 
 const styles = StyleSheet.create({
     container: {

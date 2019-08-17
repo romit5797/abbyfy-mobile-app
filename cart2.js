@@ -3,16 +3,145 @@ import {
     View,
     Text,
     StyleSheet,
-    TouchableOpacity,
+    TouchableOpacity,  AsyncStorage,
     Platform,
     StatusBar,ScrollView,
     Image,Dimensions
 } from "react-native";
+import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';  
-import { Container, Content, Body,Header,Button, Left, Right, Item, Input, Card, CardItem } from 'native-base'
+import { Container, Content, Body,Header,Button, Left, Right, Item, Input, Card, CardItem,Form,Picker } from 'native-base'
 import ItemCard from './itemscard';
 
 class CartScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selected: "key1",
+      default:[],
+      userdata:[],
+      test:null
+    };
+  }
+
+  componentDidMount() {
+    AsyncStorage.getItem('phone').then((token) => {
+    axios.post('http://35.229.19.138:8080/addressbyphone/', {
+      phone: '+91'+token
+    })
+    .then((response) => {
+      console.log(response)
+     this.setState({userdata: response.data.output});
+    })
+    .catch((e) => 
+    {
+      console.error(e);
+    });
+
+
+    axios.post('http://35.229.19.138:8080/addresstype/', {
+      phone: '+91'+token,
+      type: 'Default'
+    })
+    .then((response) => {
+      console.log(response)
+      this.setState({default: response.data.output});
+    })
+    .catch((e) => 
+    {
+      console.error(e);
+    });
+  })
+  }
+
+  display()
+  {
+    if(this.state.default.length==0)
+    {
+      return (
+        <View>
+          <Text>Loading..</Text>
+        </View>
+      )
+    }
+    else{
+      return(
+             <View>
+<Card style={{ marginLeft: 5, marginRight: 5,marginTop:10 , marginBottom:10}}>
+                    <CardItem style={{ marginTop: 5 }}>
+                   
+                    <Body>
+
+ <Text style={{ color:'black',fontSize: 16,paddingBottom:10}}>{this.state.default[0].FirstName+this.state.default[0].LastName}<Text style={{ color:'#7c7c7f',fontSize: 14}}>(Default)</Text></Text>
+      <Text style={{ color:'#7c7c7f',fontSize: 14}}>{this.state.default[0].Flat}</Text>
+      <Text style={{ color:'#7c7c7f',fontSize: 14}}>{this.state.default[0].Area+","}</Text>
+      <Text style={{ color:'#7c7c7f',fontSize: 14}}>{this.state.default[0].Town+","+this.state.default[0].Pincode}</Text>
+      <Text style={{ color:'#7c7c7f',fontSize: 14,paddingBottom:5}}>{this.state.default[0].State}</Text>
+      <Text style={{ color:'#7c7c7f',fontSize: 14}}>Mobile: {this.state.default[0].PhoneNo}</Text>
+     
+                   
+                       
+            </Body>       
+                    </CardItem>
+                               
+  <View style={{
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,marginLeft:5,marginRight:5
+  }}
+/>
+<CardItem>
+
+  <View style={{justifyContent: 'center',alignItems: 'center'}}>
+  <TouchableOpacity style={styles.button2}>
+                   
+<Picker
+              note
+              mode="dropdown"
+              style={{ width: 200, marginLeft:5 }}
+              selectedValue={this.state.selected}
+              onValueChange={this.onValueChange.bind(this)}
+            >
+            
+              <Picker.Item label="Change Address" value="key1" />
+              {
+
+this.state.userdata.map((item, index) => {
+return(
+              <Picker.Item label={item.Type+": "+item.Flat+","+item.Area+","+item.Town+","+item.State+","+item.Pincode } value={item.ID} />
+)
+})
+              }
+              </Picker>
+            </TouchableOpacity>
+            </View>
+                     
+</CardItem>
+                    </Card>
+
+     </View>
+      )
+    }
+  }
+
+
+  onValueChange(value) {
+    if(value=="key1")
+    {
+      return null;
+    }else{
+    axios.post('http://35.229.19.138:8080/addressbyid/', {
+      id: value
+    })
+    .then((response) => {
+      console.log(response)
+      this.setState({default: response.data.output});
+    })
+    .catch((e) => 
+    {
+      console.error(e);
+    });
+  }
+  }
     render() {
         return (
             <View>
@@ -31,50 +160,7 @@ class CartScreen extends Component {
 </View>
 </View>
                <ScrollView  scrollEventThrottle={16}>
-               <Card style={{ marginLeft: 5, marginRight: 5,marginTop:10 , marginBottom:10}}>
-                    <CardItem style={{ marginTop: 5 }}>
-                   
-                    <Body>
-
-
-                    <Text style={{ color:'black',fontSize: 16,paddingBottom:10}}>Ram Prasad <Text style={{ color:'#7c7c7f',fontSize: 14}}>(Default)</Text></Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>House no. 32</Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Rehari,</Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Jammu, 180001</Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14,paddingBottom:5}}>Jammu and Kashmir</Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Mobile: 7889009009</Text>
-                     
-                       
-            </Body>       
-                    </CardItem>
-                               
-  <View style={{
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,marginLeft:5,marginRight:5
-  }}
-/>
-<CardItem>
-<View style={styles.container}>
-     <View style={styles.buttonContainer}>
-     <TouchableOpacity
-         
-          underlayColor='#fff'>
-          <Text style={{color:'blue',textAlignVertical: "center",textAlign: "center"}}>EDIT/CHANGE</Text>
- </TouchableOpacity>
-    </View>
-   
-    <View style={styles.buttonContainer2}>
-    <TouchableOpacity
-         
-         
-          underlayColor='#fff'>
-          <Text style={{color:'blue',textAlignVertical: "center",textAlign: "center"}}>ADD NEW ADDRESS</Text>
- </TouchableOpacity>
-    </View>
-  </View>
-</CardItem>
-                    </Card>
-
+               {this.display()}
 
                <Text style={{ fontSize: 16, fontWeight: '700', paddingHorizontal: 20  }}>
                                 Items
@@ -331,5 +417,21 @@ const styles = StyleSheet.create({
          height:20,
          marginLeft:20,
          justifyContent: 'center'
-       }
+       },
+       button2: {
+        shadowColor: 'rgba(0,0,0, .4)', // IOS
+        shadowOffset: { height: 1, width: 1 }, // IOS
+        shadowOpacity: 1, // IOS
+        shadowRadius: 1, //IOS
+        backgroundColor: '#F5F5F5',
+        elevation: 2, // Android
+        height: 30,
+        width: 200,
+        borderRadius:5,
+        borderWidth: 0.1,
+        borderColor: '#fff',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+      }
        });

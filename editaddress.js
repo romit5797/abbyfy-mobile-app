@@ -1,162 +1,108 @@
-import React, { Component } from 'react';
-import Geolocation from 'react-native-geolocation-service';
-import {  AsyncStorage,StyleSheet,StatusBar,Dimensions,ScrollView,TextInput, Text, View, PermissionsAndroid, Alert, Button,Platform } from 'react-native';
+import React from 'react';
 import { createStackNavigator,createAppContainer} from 'react-navigation'
-import Test from './test';
+import {
+    View,
+    Text,TextInput,
+    Image,StatusBar,
+    Dimensions,Button,
+    StyleSheet,ScrollView,
+    TouchableWithoutFeedback,
+} from 'react-native';
 import axios from 'axios';
-export async function request_device_location_runtime_permission() {
+import { genericTypeAnnotation } from '@babel/types';
+
+export default class AddAddress extends React.Component {
+  constructor(props) {
+    super(props);
  
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-      {
-        'title': 'ReactNativeCode Location Permission',
-        'message': 'ReactNativeCode App needs access to your location '
-      }
-    )
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
- 
-      Alert.alert("Location Permission Granted.");
-    }
-    else {
- 
-      Alert.alert("Location Permission Not Granted");
- 
-    }
-  } catch (err) {
-    console.warn(err)
-  }
-}
-
- class GpsRequest extends Component {
-
-  constructor(){
-
-    super()
-
-    this.state={
-      first:null,
-      last:null,
-      gstin:null,
-      pincode:null,
-      town:null,
-      state:null,
-      flat:null,
-      area:null,
-      landmark:null,
-      latitude : 0,
-      longitude : 0,
-      error : null
-
-    }
+    this.state = {
+       first:null,
+       last:null,
+       phoneno:null,
+       pincode:null,
+       town:null,
+       state:null,
+       flat:null,
+       area:null,
+       landmark:null
+    };
   }
 
-  async componentDidMount() {
- 
-    if(Platform.OS === 'android')
-    {
+  componentDidMount() {
 
-    await request_device_location_runtime_permission();
-
-    }
-
-    this.getLongLat = Geolocation.watchPosition(
-      (position) => {
-          
-        this.setState({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          error: null,
-        });
-       
-      },
-      (error) => this.setState({ error: error.message }),
-      { enableHighAccuracy: true, timeout: 2000, maximumAge: 100, distanceFilter: 10 },
-    );
-
-  }
-
-
-  componentWillUnmount() {
-
-   Geolocation.clearWatch(this.getLongLat);
-
-  }
-
-  addmyaddress(val1,val2,val3,val4,val5,val6,val7,val8,val9) {
-
-    let x=0;
-    AsyncStorage.getItem('phone').then((token) => {
-    if(val1!=null && val2!=null && val3 != null && val4 != null && val5 != null && val6 != null &&  val7 != null &&  val8 != null &&  val9 != null)
-    {
-      axios.post('http://35.229.19.138:8080/adduser/', {
-     phone : '+91'+token,
-     last : val3,
-     first: val4,
-     gstin: val1
+    axios.post('http://35.229.19.138:8080/addressbyid/', {
+     id : this.props.navigation.state.params.id
     })
     .then((response) => {
-     
+        console.log(response);
+     this.setState({area:response.data.output[0].Area,
+        first:response.data.output[0].FirstName,
+        flat:response.data.output[0].Flat,
+        landmark: response.data.output[0].Landmark,
+        last:response.data.output[0].LastName,
+        phoneno:response.data.output[0].PhoneNo.substring(3, response.data.output[0].PhoneNo.length),
+        pincode : response.data.output[0].Pincode,
+        state:response.data.output[0].State,
+        town:response.data.output[0].Town
+    })
     })
     .catch((e) => 
     {
       console.error(e);
     });
+    
+  }
 
+ addmyaddress(val1,val2,val3,val4,val5,val6,val7,val8,val9) {
+ if(val1 != null && val2 && null && val3 != null && val4 != null && val5 != null && val6 != null &&  val7 != null &&  val8 != null &&  val9 != null)
+ {
+    axios.post('http://35.229.19.138:8080/updateaddress/', {
+      phone : "+91"+val1,
+      pincode : val2,
+      type : "Other",
+      lastname : val3,
+      firstname : val4,
+      town : val5,
+      state: val6,
+      flat : val7,
+      area: val8,
+      landmark: val9,
+      latitude: 34.05,
+      longitude: 77.77,
+      id:this.props.navigation.state.params.id
 
-      axios.post('http://35.229.19.138:8080/addaddress/', {
-        phone : "+91"+token,
-        pincode : val2,
-        type : "Default",
-        lastname : val3,
-        firstname : val4,
-        town : val5,
-        state: val6,
-        flat : val7,
-        area: val8,
-        landmark: val9,
-        latitude: this.state.latitude,
-        longitude: this.state.longitude
-  
-      })
-      .then((response) => {
-       
-        if(response.status==200)
-        {
-         this.props.navigation.navigate('Details', {
-         });
-        }
-        else {
-          alert("Something went wrong");
-        }
-       
-      })
-      .catch((e) => 
-      {
-        console.error(e);
-      });
-
-     
-
-    }
-    else{
-        alert("Enter all the details..");
-    }
-  })
-  
-    }
+    })
+    .then((response) => {
+        console.log(response);
+     if(response.status==200)
+     {
+        
+       alert("Address updated successfully");
+       this.props.navigation.navigate('Details2');
+     }
+     else {
+       alert("Something went wrong");
+     }
+    })
+    .catch((e) => 
+    {
+      console.error(e);
+    });
+ }
+ else{
+     alert("Enter all the details..");
+ }
+  }
 
   render() {
-
     return (
-
-      <View>
+    <View>
          <View style={styles.headercontainer}>
           <View style={styles.navBar}>
   <View style={styles.leftContainer}>
   </View>
   <Text style={{color:'white',fontSize: 18, fontWeight: '600'}}>
-  User Details
+   Edit address
   </Text>
   <View style={styles.rightContainer}>
     <View style={styles.rightIcon}>
@@ -167,61 +113,70 @@ export async function request_device_location_runtime_permission() {
 <ScrollView
          scrollEventThrottle={16}>
         <Text style={{ fontSize: 24, fontWeight: '700', marginLeft:10 }}>
-                                Enter all details to proceed
+                                Change delivery address details
                             </Text>
 <View style={{marginRight:10,marginLeft:10,marginTop:5,borderColor:'black',borderWidth:1}}>
          <TextInput style={styles.inputs}
               placeholder="First name"
               underlineColorAndroid='transparent'
+              value={this.state.first}
               onChangeText={(first) => this.setState({first})}
               />
                 <TextInput style={styles.inputs}
               placeholder="Last name"
               underlineColorAndroid='transparent'
+              value={this.state.last}
               onChangeText={(last) => this.setState({last})}
               />
               <TextInput style={styles.inputs}
-              placeholder="GSTIN"
+              placeholder="Mobile number"
               underlineColorAndroid='transparent'
-              onChangeText={(gstin) => this.setState({gstin})}
-              />
+              value={this.state.phoneno}
+              onChangeText={(phoneno) => this.setState({phoneno})}
+              keyboardType={'numeric'}/>
               <TextInput style={styles.inputs}
               placeholder="Pincode"
               underlineColorAndroid='transparent'
+              value={this.state.pincode}
               onChangeText={(pincode) => this.setState({pincode})}
               keyboardType={'numeric'}/>
               <TextInput style={styles.inputs}
               placeholder="Town/City"
+              value={this.state.town}
               onChangeText={(town) => this.setState({town})}
               underlineColorAndroid='transparent'
              />
               <TextInput style={styles.inputs}
               placeholder="State"
+              value={this.state.state}
               onChangeText={(state) => this.setState({state})}
               underlineColorAndroid='transparent'
               />
               <TextInput style={styles.inputs}
               placeholder="Flat,House no.,Building,Company,Apartment"
+              value={this.state.flat}
               onChangeText={(flat) => this.setState({flat})}
               underlineColorAndroid='transparent'
              />
               <TextInput style={styles.inputs}
               placeholder="Area,Colony,Street,Sector,Village"
               underlineColorAndroid='transparent'
+              value={this.state.area}
               onChangeText={(area) => this.setState({area})}
               />
               <TextInput style={styles.inputs}
               placeholder="Landmark eg. near apsra theatre"
               underlineColorAndroid='transparent'
+              value={this.state.landmark}
               onChangeText={(landmark) => this.setState({landmark})}
               />
              
 </View>
 <View style={{marginRight:10,marginLeft:10,marginTop:5}}>
 <Button
-  title="NEXT"
+  title="Update Address"
   color="green"
-  onPress={() => this.addmyaddress(this.state.gstin,this.state.pincode,this.state.last,this.state.first,this.state.town,this.state.state,this.state.flat,this.state.area,this.state.landmark)}
+  onPress={() => this.addmyaddress(this.state.phoneno,this.state.pincode,this.state.last,this.state.first,this.state.town,this.state.state,this.state.flat,this.state.area,this.state.landmark)}
   />
   </View>
   <View style={{paddingBottom:200}}/>
@@ -357,25 +312,3 @@ const styles = StyleSheet.create({
          justifyContent: 'center'
        }
        });
-
-
-const RootStack = createStackNavigator(
-    {
-        DefaultScreen : GpsRequest,
-      Details: Test,
-    },
-    {
-      initialRouteName: 'DefaultScreen',
-      headerMode: 'none'
-    }
-  );
-  
-  const AppContainer = createAppContainer(RootStack);
-  
-export default class VerifyOtp extends React.Component {
-    render() {
-      return <AppContainer screenProps={this.props.navigation.state.params.phone}/>;
-    }
-  }
-
-  

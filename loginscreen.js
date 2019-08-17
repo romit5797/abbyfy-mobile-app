@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {
+    AsyncStorage,
     View,
     Text,
     StyleSheet,
@@ -32,7 +33,7 @@ class LoginScreen extends Component {
             number: ''
         }
     }
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
 
         this.loginHeight = new Animated.Value(150)
 
@@ -131,6 +132,7 @@ class LoginScreen extends Component {
   {
         if(this.state.number.length==10)
         {
+            AsyncStorage.setItem('phone', this.state.number);
             this.props.navigation.navigate('NextScreen', {
                 phone: this.state.number
               });

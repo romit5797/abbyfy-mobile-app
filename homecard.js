@@ -12,7 +12,7 @@ class HomeCard extends Component {
             <View style={{ width: this.props.width / 2 - 20, height: this.props.width / 2, borderWidth: 0.5, borderColor: '#dddddd' }}>
                 <View style={{ flex: 1 }}>
                     <Image
-                        style={{ flex: 1, width: null, height: null, resizeMode: 'cover' }}
+                        style={{ flex: 1, width: null, height: null, resizeMode: 'cover',marginTop:5 }}
                         source={this.props.imageUri} />
                 </View>
                 <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'space-evenly', paddingLeft: 10 }}>

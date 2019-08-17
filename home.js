@@ -1,5 +1,6 @@
 import React from 'react';  
-import {StyleSheet, TouchableOpacity,Text,TextInput,Image, View,Button,ScrollView,SafeAreaView} from 'react-native';  
+import axios from 'axios';
+import {StyleSheet, TouchableOpacity,Text,TextInput,Image, View,Button,ScrollView,SafeAreaView,BackHandler} from 'react-native';  
 import { createStackNavigator, createAppContainer } from 'react-navigation';  
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';  
 import Icon from 'react-native-vector-icons/Ionicons';  
@@ -12,45 +13,80 @@ import Product from './product';
 import Grocery from './grocery';
 const { height, width } = Dimensions.get('window')
 
-class HomeScreen extends React.Component {
+export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
  
     this.state = {
+      productdata:[],
+      categorydata:[],
         search: '',
       position: 1,
       interval: null,
-      dataSource: [
-        {
-          title: 'Title 1',
-          caption: 'Caption 1',
-          url: 'https://cdn.aarp.net/content/dam/aarp/money/budgeting_savings/2018/07/99-ways-logo/1140-food-and-grocery-ls.imgcache.rev3e1e908123481ab4ed62480bfd887315.jpg',
-        }, {
-          title: 'Title 2',
-          caption: 'Caption 2',
-          url: 'http://placeimg.com/640/480/any',
-        }, {
-          title: 'Title 3',
-          caption: 'Caption 3',
-          url: 'https://img.rcmbusiness.com/rcmshopping/category_banner_images/Grocery%20Banner.jpg',
-        },
-      ],
+      bannerdata:[],
+      dataSource: []
     };
   }
  
-  componentWillMount() {
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+    axios.post('http://35.229.19.138:8080/banner/', {
+    })
+    .then((response) => {
+      response.data.output.map((item, index) => {
+        this.state.dataSource.push({title: item.BannerTitle,
+        caption: item.BannerCaption,
+        url: item.BannerImage,
+        id:item.ProductID}
+        );
+      })
+
+    })
+    .catch((e) => 
+    {
+      console.error(e);
+    });
+
+
     this.setState({
       interval: setInterval(() => {
         this.setState({
           position: this.state.position === this.state.dataSource.length ? 0 : this.state.position + 1
         });
       }, 3000)
+      
+    });
+    
+    axios.post('http://35.229.19.138:8080/categories/', {
+    })
+    .then((response) => {
+      this.setState({categorydata:response.data.output})
+    })
+    .catch((e) => 
+    {
+      console.error(e);
+    });
+
+    axios.post('http://35.229.19.138:8080/products/', {
+    })
+    .then((response) => {
+      this.setState({productdata:response.data.output})
+    })
+    .catch((e) => 
+    {
+      console.error(e);
     });
   }
- 
+
+
   componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
     clearInterval(this.state.interval);
   }
+  handleBackButtonClick = () => {
+    this.props.navigation.goBack(null);
+    return true;
+};
  
   render() {
     return (
@@ -67,19 +103,22 @@ class HomeScreen extends React.Component {
  
   <View style={styles.rightContainer}>
     <View style={styles.rightIcon}>
-    <Icon style={[{color: "white"}]} size={20} name={'md-cart'} onPress={() => this.props.navigation.goBack()} />
+    <Icon style={[{color: "white"}]} size={20} name={'md-cart'} onPress={() => this.props.navigation.navigate('Cart')} />
     </View>
     </View>
 </View>
+
 <View style={styles.inputContainer}>
 <Icon name="md-search" size={25} style={{ marginLeft: 5,color:"#C0C0C0" }} />
           <TextInput style={styles.inputs}
               placeholder="Search products & brands"
-              keyboardType="email-address"
+              onTouchStart={() => this.props.navigation.navigate('Details3')}
               underlineColorAndroid='transparent'
               onChangeText={(search) => this.setState({search})}/>
+             
 
 </View>
+
 </View>
 
 
@@ -95,7 +134,7 @@ class HomeScreen extends React.Component {
         dataSource={this.state.dataSource}
         position={this.state.position}
         onPositionChanged={position => this.setState({ position })} 
-        onPress={() => this.props.navigation.navigate('Details1')} />
+        onPress={() => this.props.navigation.navigate('Details1',{ProductID : this.state.dataSource[this.state.position].id})} />
         </View>
 
                         <View style={{ flex: 1, backgroundColor: 'white', paddingTop: 20 }}>
@@ -109,25 +148,20 @@ class HomeScreen extends React.Component {
                                     horizontal={true}
                                     showsHorizontalScrollIndicator={false}
                                 >
-                                
-                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Details2')}>
-                                    <Category imageUri={{uri:'https://www.winnipeggrocery.com/images/10788252_l.png'}}
-                                        name="Groceries"
+                                 {
+
+                                 this.state.categorydata.map((item, index) => {
+                                 return(
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Details2',{CategoryName : item.CategoryName})}>
+                                    <Category imageUri={{uri:item.CategoryImage}}
+                                        name={item.CategoryName}
                                     />
                                     </TouchableOpacity>
 
-                                     <TouchableOpacity onPress={() => this.props.navigation.navigate('Details2')}>
-                                     <Category imageUri={{uri:'http://www.crystalplastindustries.com/img/products/homecare.jpg'}}
-                                        name="Homecare"
-                                    />
-                                    </TouchableOpacity>
+                                   )
+                                   })
 
-                                     <Category imageUri={{uri:'http://micktimes.com/wp-content/uploads/2019/03/Personal-Care-Products-990x557.jpg'}}
-                                        name="Personal care"
-                                    />
-                                     <Category imageUri={{uri:'https://puretekcorp.com/wp-content/uploads/2019/02/puretek-brands.jpg'}}
-                                        name="Health & OTC"
-                                    />
+                                  }
                                    
                                 </ScrollView>
                                 
@@ -154,40 +188,30 @@ class HomeScreen extends React.Component {
                                 Products for you
                             </Text>
 
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Details1')}>
+                            
                             <View style={{ paddingHorizontal: 20, marginTop: 20, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-                                <HomeCard width={width}
-                                     imageUri={{uri:'https://5.imimg.com/data5/BH/PL/MY-7778582/maggi-noodles-500x500.jpg'}}
-                                    name="Maggi"
-                                    type="Grocery"
-                                    price={11}
-                                    rating={4}
-                                />
-                                <HomeCard width={width}
-                                     imageUri={{uri:'https://images-na.ssl-images-amazon.com/images/I/61UQKnK4SyL._SX466_.jpg'}}
-                                    name="Harpic"
-                                    type="Homecare"
-                                    price={150}
-                                    rating={4}
-                                />
-                                <HomeCard width={width}
-                                     imageUri={{uri:'https://images-na.ssl-images-amazon.com/images/I/71IJh6MNVgL._SY355_.jpg'}}
-                                    name="Pantene Shampoo"
-                                    type="Personalcare"
-                                    price={200}
-                                    rating={4}
-                                />
-                                 <HomeCard width={width}
-                                     imageUri={{uri:'https://images-na.ssl-images-amazon.com/images/I/91LkFGmn46L._SL1500_.jpg'}}
-                                    name="Band Aid"
-                                    type="Healthcare & OTC"
-                                    price={10}
-                                    rating={4}
-                                />
+                              
+                              {
 
+                              this.state.productdata.map((item, index) => {
+                                return(
+                                  <TouchableOpacity onPress={() => this.props.navigation.navigate('Details1',{ProductID : item.ID})}>
+                                  <HomeCard width={width}
+                                  imageUri={{uri:item.ProductImage}}
+                                 name={item.ProductName+" "+item.Size}
+                                 type={item.SubCategoryName}
+                                 price={item.Price}
+                                 rating={item.Rating}
+                             />
+                              </TouchableOpacity>
+)
+                              })
+
+                              }
+                               
 
                             </View>
-                            </TouchableOpacity>
+                           
                         </View>
                         <View style={{ marginBottom: 100 }}/>
                     </ScrollView>
@@ -320,31 +344,4 @@ const styles = StyleSheet.create({
     }
     });
 
-    const RootStack = createStackNavigator(
-      {
-          Loginscreen : HomeScreen,
-          Details1: Product,
-          Details2: Grocery,
-        
-       
-      },
-      {
-        initialRouteName: 'Loginscreen',
-        headerMode: 'none'
-      }
-    );
-    
-    const AppContainer = createAppContainer(RootStack);
-     
-    export default class Home extends React.Component {
-      
-      render() {
-        return(
-          <AppContainer/>
-        );
-        
-      }
-    }
-    
-    
-    
+   

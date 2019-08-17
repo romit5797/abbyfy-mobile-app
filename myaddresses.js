@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import {
     View,Button,
-    Text,
+    Text, AsyncStorage,
+    ActivityIndicator,
     StyleSheet,
     TouchableOpacity,
     Platform,
@@ -13,7 +14,251 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Container, Content, Header,Left,Body,ListItem, Right, Item, Input, Card, CardItem } from 'native-base'
 import ItemCard from './itemscard';
 import { createStackNavigator, createAppContainer } from 'react-navigation'; 
+import axios from 'axios';
+import EditAddress from './editaddress';
+
 class MyAddresses extends Component {
+  constructor(props) {
+    super(props);
+ 
+    this.state = {
+default:[],
+other:[]
+    };
+  }
+
+  componentDidMount() {
+    this.focusListener = this.props.navigation.addListener("didFocus", () => {
+    AsyncStorage.getItem('phone').then((token) => {
+    axios.post('http://35.229.19.138:8080/addresstype/', {
+      phone: '+91'+token,
+      type: 'Default'
+    })
+    .then((response) => {
+     this.setState({default: response.data.output});
+    })
+    .catch((e) => 
+    {
+      console.error(e);
+    });
+
+
+    axios.post('http://35.229.19.138:8080/addresstype/', {
+      phone: '+91'+token,
+      type: 'Other'
+    })
+    .then((response) => {
+      this.setState({other: response.data.output});
+    })
+    .catch((e) => 
+    {
+      console.error(e);
+    });
+  })
+})
+  }
+
+  componentWillUnmount() {
+    // Remove the event listener
+    this.focusListener.remove();
+  }
+
+  refreshaddress()
+  {
+    AsyncStorage.getItem('phone').then((token) => {
+      axios.post('http://35.229.19.138:8080/addresstype/', {
+        phone: '+91'+token,
+        type: 'Default'
+      })
+      .then((response) => {
+       this.setState({default: response.data.output});
+      })
+      .catch((e) => 
+      {
+        console.error(e);
+      });
+  
+  
+      axios.post('http://35.229.19.138:8080/addresstype/', {
+        phone: '+91'+token,
+        type: 'Other'
+      })
+      .then((response) => {
+        this.setState({other: response.data.output});
+      })
+      .catch((e) => 
+      {
+        console.error(e);
+      });
+    })
+  }
+
+  deleteaddress(val)
+  {
+    axios.post('http://35.229.19.138:8080/deleteaddress/', {
+      id : val
+    })
+    .then((response) => {
+     if(response.status==200)
+     {
+       alert("Removed successfully..");
+       this.refreshaddress();
+     }
+     else
+     {
+       alert("Something went wrong..");
+     }
+    })
+    .catch((e) => 
+    {
+      console.error(e);
+    });
+  }
+
+  displaydefault()
+{
+  if(this.state.default.length==0)
+  {
+    return(
+      <View style = {styles.container2}>
+      <ActivityIndicator
+         color = '#bab86c'
+         size = "large"
+         style = {styles.activityIndicator}/>
+   </View>
+    )
+   
+  }
+  else
+  {
+    return(
+      <View>
+                       <Text style={{ fontSize: 16, fontWeight: '700', paddingHorizontal: 20  }}>
+                                Default Address
+                            </Text>
+                    
+                            <Card style={{ marginLeft: 5, marginRight: 5 }}>
+                    <CardItem style={{ marginTop: 5 }}>
+                   
+                    <Body>
+
+
+                    <Text style={{ color:'black',fontSize: 16,paddingBottom:10}}>{this.state.default[0].FirstName+this.state.default[0].LastName}</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>{this.state.default[0].Flat + ","}</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>{this.state.default[0].Area+","}</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>{this.state.default[0].Town+","+this.state.default[0].Pincode+","}</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14,paddingBottom:5}}>{this.state.default[0].State}</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Mobile: {this.state.default[0].PhoneNo}</Text>
+                     
+                       
+            </Body>       
+                    </CardItem>
+                               
+  <View style={{
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,marginLeft:5,marginRight:5
+  }}
+/>
+<CardItem>
+<View style={styles.container}>
+     <View style={styles.buttonContainer}>
+     <TouchableOpacity
+         
+          underlayColor='#fff' onPress={() => this.props.navigation.navigate('Edit',{id:this.state.default[0].ID})}>
+          <Text style={{color:'blue',textAlignVertical: "center",textAlign: "center"}}>EDIT</Text>
+ </TouchableOpacity>
+    </View>
+   
+    <View style={styles.buttonContainer2}>
+    <TouchableOpacity
+         
+         
+          underlayColor='#fff'  onPress={() => alert("Cannot delete default address")}>
+          <Text style={{color:'blue',textAlignVertical: "center",textAlign: "center"}}>REMOVE</Text>
+ </TouchableOpacity>
+    </View>
+  </View>
+</CardItem>
+                    </Card>
+      </View>
+    )
+  }
+}
+
+displayother()
+{
+if(this.state.default==0 || this.state.other==0) 
+{
+  return null;
+}
+else
+{
+  return(
+  
+    <View>
+               <Text style={{ fontSize: 16, fontWeight: '700', paddingHorizontal: 20  }}>
+                                Other Addresses
+                            </Text>
+{
+
+  this.state.other.map((item, index) => {
+  return(
+                
+                            <Card style={{ marginLeft: 5, marginRight: 5 }}>
+                    <CardItem style={{ marginTop: 5 }}>
+
+                  
+       
+                   
+                    <Body>
+                    <Text style={{ color:'black',fontSize: 16,paddingBottom:10}}>{item.FirstName+" "+item.LastName}</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>{item.Flat+","}</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>{item.Area+","}</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>{item.Town+","+item.Pincode+","}</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14,paddingBottom:5}}>{item.State}</Text>
+                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Mobile: {item.PhoneNo}</Text>
+                         </Body>
+           
+          
+         
+                    </CardItem>
+                    <View style={{
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,marginLeft:5,marginRight:5
+  }}
+/>
+<CardItem>
+<View style={styles.container}>
+     <View style={styles.buttonContainer}>
+     <TouchableOpacity
+         
+          underlayColor='#fff' onPress={() => this.props.navigation.navigate('Edit',{id:item.ID})}>
+          <Text style={{color:'blue',textAlignVertical: "center",textAlign: "center"}}>EDIT</Text>
+ </TouchableOpacity>
+    </View>
+   
+    <View style={styles.buttonContainer2}>
+    <TouchableOpacity
+         
+         
+          underlayColor='#fff' onPress={() => this.deleteaddress(item.ID)}>
+          <Text style={{color:'blue',textAlignVertical: "center",textAlign: "center"}}>REMOVE</Text>
+ </TouchableOpacity>
+    </View>
+  </View>
+</CardItem>
+                    </Card>
+                    )
+                              })
+
+                              }
+                    
+    </View>
+  )
+
+}
+}
+
     render() {
         return (
             <View>
@@ -40,78 +285,9 @@ class MyAddresses extends Component {
                     </CardItem>
                     </Card>
                 </TouchableOpacity>
-               <Text style={{ fontSize: 16, fontWeight: '700', paddingHorizontal: 20  }}>
-                                Default Address
-                            </Text>
-                    
-                            <Card style={{ marginLeft: 5, marginRight: 5 }}>
-                    <CardItem style={{ marginTop: 5 }}>
-                   
-                    <Body>
-
-
-                    <Text style={{ color:'black',fontSize: 16,paddingBottom:10}}>Ram Prasad</Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>House no. 32</Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Rehari,</Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Jammu, 180001</Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14,paddingBottom:5}}>Jammu and Kashmir</Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Mobile: 7889009009</Text>
-                     
-                       
-            </Body>       
-                    </CardItem>
-                               
-  <View style={{
-    borderBottomColor: 'black',
-    borderBottomWidth: 1,marginLeft:5,marginRight:5
-  }}
-/>
-<CardItem>
-<View style={styles.container}>
-     <View style={styles.buttonContainer}>
-     <TouchableOpacity
-         
-          underlayColor='#fff'>
-          <Text style={{color:'blue',textAlignVertical: "center",textAlign: "center"}}>EDIT</Text>
- </TouchableOpacity>
-    </View>
-   
-    <View style={styles.buttonContainer2}>
-    <TouchableOpacity
-         
-         
-          underlayColor='#fff'>
-          <Text style={{color:'blue',textAlignVertical: "center",textAlign: "center"}}>REMOVE</Text>
- </TouchableOpacity>
-    </View>
-  </View>
-</CardItem>
-                    </Card>
-
-                    <Text style={{ fontSize: 16, fontWeight: '700', paddingHorizontal: 20  }}>
-                                Other Addresses
-                            </Text>
-
-                                          
-                            <Card style={{ marginLeft: 5, marginRight: 5 }}>
-                    <CardItem style={{ marginTop: 5 }}>
-
-                  
-       
-                   
-                    <Body>
-                    <Text style={{ color:'black',fontSize: 16,paddingBottom:10}}>Ram Prasad</Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>House no. 32</Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Gandhi Nagar,</Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Jammu, 180001</Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14,paddingBottom:5}}>Jammu and Kashmir</Text>
-                        <Text style={{ color:'#7c7c7f',fontSize: 14}}>Mobile: 7889009009</Text>
-                         </Body>
+                {this.displaydefault()}
+                  {this.displayother()}
            
-          
-         
-                    </CardItem>
-                    </Card>
           <View style={{ marginBottom: 100 }}/>
                     </ScrollView>
             </View>
@@ -123,6 +299,7 @@ const RootStack = createStackNavigator(
   {
       DefaultScreen : MyAddresses,
     Details: AddAddress,
+    Edit : EditAddress
   },
   {
     initialRouteName: 'DefaultScreen',
@@ -275,5 +452,17 @@ const styles = StyleSheet.create({
          height:20,
          marginLeft:20,
          justifyContent: 'center'
-       }
+       },
+       container2: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 70
+     },
+     activityIndicator: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 80
+     }
        });

@@ -1,5 +1,6 @@
 import React from 'react';  
-import {StyleSheet, TouchableHighlight,Text,TextInput,Image, View,Button,ScrollView,SafeAreaView} from 'react-native';  
+import axios from 'axios';
+import {StyleSheet, TouchableOpacity,Text,TextInput,Image, View,Button,ScrollView,SafeAreaView} from 'react-native';  
 import { createBottomTabNavigator, createAppContainer} from 'react-navigation';  
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';  
 import Icon from 'react-native-vector-icons/Ionicons';  
@@ -15,9 +16,24 @@ export default class Grocery extends React.Component {
  
     this.state = {
         search: '',
+        subcategorydata:[]
     };
   }
 
+  componentDidMount() {
+
+    axios.post('http://35.229.19.138:8080/subcategories/', {
+      category: this.props.navigation.state.params.CategoryName
+    })
+    .then((response) => {
+     this.setState({subcategorydata:response.data.output})
+    })
+    .catch((e) => 
+    {
+      console.error(e);
+    });
+
+  }
  
   render() {
     return (
@@ -29,31 +45,25 @@ export default class Grocery extends React.Component {
                    
                         <View style={{ marginTop: 40 }}>
                             <Text style={{ fontSize: 24, fontWeight: '700', paddingHorizontal: 20 }}>
-                                Grocery 
+                               {this.props.navigation.state.params.CategoryName}
                             </Text>
                             <View style={{ paddingHorizontal: 20, marginTop: 20, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                            {
+
+                               this.state.subcategorydata.map((item, index) => {
+                               return(
+                                <TouchableOpacity onPress={() => this.props.navigation.navigate('Details4',{SubCategoryName: item.SubCategoryName})}>
                             <SubCategory 
                                         width={width}
-                                        imageUri={{uri:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpVE2y4L2Ff_XQnRTrKt9mMSIwtUZxurnHkWPoJEZYtYamA4At'}}
-                                        name="Staples"
+                                        imageUri={{uri:item.SubCategoryImage}}
+                                        name={item.SubCategoryName}
                                     />
-                             <SubCategory 
-                                        width={width}
-                                        imageUri={{uri:'https://nerdist.com/wp-content/uploads/2019/02/cereals-2122019-1200x676.jpg'}}
-                                        name="Cereals"
-                                    />
-                             <SubCategory 
-                                        width={width}
-                                        imageUri={{uri:'http://indiannerve.com/wp-content/uploads/2014/10/soft-drinks.jpg'}}
-                                        name="Beverages"
-                                    />
-                             <SubCategory 
-                                        width={width}
-                                        imageUri={{uri:'https://images.costco-static.com/ImageDelivery/imageService?profileId=12026540&imageId=1074184-847__1&recipeName=350'}}
-                                        name="Oil"
-                                    />
+                                    </TouchableOpacity>
+                                    )
+                              })
 
-                                
+                              }
+
                             </View>
                         </View>
 
