@@ -108,6 +108,7 @@ export default class Search extends React.Component {
 <View style={styles.inputContainer}>
 <Icon name="md-search" size={25} style={{ marginLeft: 5,color:"#C0C0C0" }} />
           <TextInput style={styles.inputs}
+              autoFocus={true} 
               placeholder="Search products & brands"
               onChangeText={(search) => this.searchproducts(search)}
               keyboardType="email-address"
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     inputs:{
-        height:35,
+        height:55,
         marginLeft:5,
         borderBottomColor: '#FFFFFF',
         flex:1,

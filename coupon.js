@@ -79,8 +79,8 @@ return(
                 <Card style={{ marginLeft: 5, marginRight: 5, marginTop:10,marginBottom:10 }}>
 <CardItem style={{ marginTop: 5 }}>
 <Left>
-<Icon style={[{color: "green",paddingLeft:5,paddingRight:10}]} size={20} name={'md-cash'}/>
-<Text style={{fontWeight: 'bold',color:'black',fontSize: 16}}>{item.Code}</Text>
+<Image source={{uri:item.CouponImage}} style={{ height: 40, width: 40, resizeMode: 'contain' }}/>
+<Text style={{fontWeight: 'bold',color:'black',fontSize: 16}}> {item.Code}</Text>
 </Left>
 <Right>
 <Text style={{ color:'#a9ba6c',fontWeight: 'bold'}}  onPress={() => this.gotocart(item.ID,item.Code,item.Amount,item.Maximum_amount,item.Minimum_amount)}>APPLY</Text>

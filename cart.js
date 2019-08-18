@@ -35,7 +35,8 @@ export default class CartScreen extends Component {
       test:null,
       id:null,
       name:null,
-      coupondiscount:0
+      coupondiscount:0,
+      emptycheck:0
     };
   }
 
@@ -128,6 +129,7 @@ axios.post('http://35.229.19.138:8080/addresstype/', {
 
 
     })
+   
   });
 }
 
@@ -333,6 +335,27 @@ display()
 {
   if(this.state.testdata.length==0)
   {
+    setTimeout(() => this.setState({emptycheck:101}), 10000)
+    if(this.state.emptycheck>100)
+    {
+      return(
+        <View>
+             <View style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+           <Image 
+           source={{uri:'https://cdn.dribbble.com/users/1244867/screenshots/4346888/empty_cart_1x.jpg'}}
+          style={{ height: 250, width: 250, resizeMode: 'contain'}}
+                                    />
+                                    </View>
+     <Text style={{   textAlign: 'center',fontSize: 16, fontWeight: '600',paddingTop:20 }}>Your cart is empty.</Text>
+     <Text style={{   textAlign: 'center',fontSize: 16, fontWeight: '600'}}>Please add items to continue.</Text>
+                                     
+        </View>
+      )
+    }
+    else{
     return(
       <View style = {styles.container2}>
     <ActivityIndicator
@@ -341,12 +364,15 @@ display()
        style = {styles.activityIndicator}/>
  </View>
     )
+    }
   }
   else{
 return(
 
     <View>
-
+ <Text style={{ fontSize: 16, fontWeight: '700',paddingHorizontal: 5   }}>
+                                Items
+                            </Text>
     {
 this.state.testdata.map((item, index) => {
 return(
@@ -550,9 +576,7 @@ return(
 </View>
 </View>
                <ScrollView  scrollEventThrottle={16}>
-               <Text style={{ fontSize: 16, fontWeight: '700',paddingHorizontal: 5   }}>
-                                Items
-                            </Text>
+              
           {this.display()}
                    
           <View style={{ marginBottom: 100 }}/>

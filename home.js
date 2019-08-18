@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     inputs:{
-        height:35,
+        height:55,
         marginLeft:5,
         borderBottomColor: '#FFFFFF',
         flex:1,
