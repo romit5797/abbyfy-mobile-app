@@ -16,8 +16,8 @@ app.get('/', function (req, res) {
 // connection configurations
 var dbConn = {
     host: 'localhost',
-    user: 'root',
-    password: 'anticounterfeit',
+    user: 'username',
+    password: 'password',
     database: 'abbyfy'
   };
   
@@ -71,12 +71,12 @@ app.use(function (req, res, next) {
 // Send otp
 app.post('/otp', function (req, res) {
     
-    var client = new plivo.Client('MAMTI0M2U1MTZHYZU2MM', 'YjlkM2VmODk4MTliNGRmM2JmZDlhMDM5MTE3YTEw');
+    var client = new plivo.Client('MAMTxxxxxxxxxx', 'Yjlkxxxxxxxxxxxxxxxxx');
     var email = req.body.email;
     var otp = req.body.otp;
 
     client.messages.create(
-      '+17652348514',
+      '+176xxxxxx',
       '+91'+email,
       'Your OTP is '+otp
     ).then(function(message_created) {
